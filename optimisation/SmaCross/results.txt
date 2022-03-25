@@ -1,0 +1,34 @@
+Start                                     0.0
+End                                   23526.0
+Duration                              23526.0
+Exposure Time [%]                   99.574956
+Equity Final [$]                 144788.18268
+Equity Peak [$]                  168358.62744
+Return [%]                          44.788183
+Buy & Hold Return [%]               -7.917755
+Return (Ann.) [%]                         0.0
+Volatility (Ann.) [%]                     NaN
+Sharpe Ratio                              NaN
+Sortino Ratio                             NaN
+Calmar Ratio                              0.0
+Max. Drawdown [%]                  -16.253842
+Avg. Drawdown [%]                   -1.448541
+Max. Drawdown Duration                 5321.0
+Avg. Drawdown Duration             216.166667
+# Trades                                 22.0
+Win Rate [%]                        45.454545
+Best Trade [%]                      15.369715
+Worst Trade [%]                     -6.081411
+Avg. Trade [%]                        2.13551
+Max. Trade Duration                    3580.0
+Avg. Trade Duration               1064.818182
+Profit Factor                        3.103101
+Expectancy [%]                       2.296297
+SQN                                  1.452231
+_strategy                 SmaCross(n1=20,n...
+_equity_curve                          Equ...
+_trades                       Size  EntryB...
+dtype: object
+
+
+SmaCross(n1=20,n2=45,n3=4)
