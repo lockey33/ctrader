@@ -4,12 +4,13 @@ import talib
 import numpy as np
 
 class CustomStrat(Strategy):
-    n1 = 1 #volatilityPercent
-    n2 = 3 #stopLossRatio
-    n3 = 1.3 #atr ratio
+    n1 = 3.7 #volatilityPercent
+    n2 = 8 #atr ratio
+    n3 = -0.05 # stop loss
     #n2 = 200
     #n3 = 50
     #n4 = 20
+    waitForCloseToEma200 = False
 
 
     def init(self):
@@ -26,27 +27,29 @@ class CustomStrat(Strategy):
 
     def next(self):
         super().next()
-        price = self.data.Close[-1]
-        slatr = self.n3*self.data.ATR[-1]
 
-        #"""
+        if(self.position.pl_pct < self.n3):
+            self.position.close()
+            self.waitForCloseToEma200 = True
+
         for trade in self.trades:
-                 if trade.is_long:
-                     trade.sl = max(trade.sl or -np.inf,
-                                    self.data.Close[-1] - self.data.ATR[-1] * 6)
-                 else:
-                     trade.sl = min(trade.sl or np.inf,
-                                    self.data.Close[-1] + self.data.ATR[-1] * 6)
+            """
+            if(trade.entry_time==5003):
+                print(trade)
+                print(self.position.pl_pct)
+                print(trade.pl_pct)
+            """
+            if trade.is_long:
+                trade.sl = max(trade.sl or -np.inf, self.data.Close[-1] - self.data.ATR[-1] * self.n2)
+            else:
+                trade.sl = min(trade.sl or np.inf, self.data.Close[-1] + self.data.ATR[-1] * self.n2)
+        if self.waitForCloseToEma200 == False or (self.waitForCloseToEma200 == True and self.data.closeToEma200[-1] == 1):
+            self.waitForCloseToEma200 = False
+            if self.data.TotSignal==2 and self.sma3 > self.sma2 and self.volatilityPercent >= self.n1 and len(self.trades)==0:
+                self.position.close()
+                self.buy()
+
+            elif self.data.TotSignal==1 and self.sma3 < self.sma2 and self.volatilityPercent >= self.n1  and len(self.trades)==0:
+                self.position.close()
+                self.sell()
         #"""
-
-        if self.data.TotSignal==2 and self.sma3 > self.sma2 and self.volatilityPercent >= self.n1 and len(self.trades)==0:
-            sl1 = price - slatr
-            tp1 = price + slatr*self.n2
-            self.position.close()
-            self.buy()
-
-        elif self.data.TotSignal==1 and self.sma3 < self.sma2 and self.volatilityPercent >= self.n1  and len(self.trades)==0:
-            sl1 = price + slatr
-            tp1 = price - slatr*self.n2
-            self.position.close()
-            self.sell()
