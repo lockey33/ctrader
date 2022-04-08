@@ -1,5 +1,3 @@
-import oandapyV20
-import oandapyV20.endpoints.instruments as instruments
 from strategies.rsi import RsiStrat
 from strategies.custom import CustomStrat
 from strategies.sma import SmaCross
@@ -13,41 +11,20 @@ import pandas as pd
 import pandas_ta as ta
 import sys
 import numpy as np
+from dateutil import parser
 from indicators.custom import PPSR
-client = Client()
-forexClient =  oandapyV20.API(access_token="bbaaf27390b9331a572bbcc6aab53330-462bdb18312ec94066fd0d5ff37d1912")
 
-timezone= pytz.timezone('Europe/Berlin')
-#klinesT = client.get_historical_klines("EURUSDT", Client.KLINE_INTERVAL_15MINUTE, "1 april 2022")
-params = {"granularity": "M15", "count": 1000}
-forexQuery = instruments.InstrumentsCandles(instrument="EUR_USD", params=params)
-forexClient.request(forexQuery)
-klinesT = []
-for row in forexQuery.response["candles"]:
-    klinesT.append({"timestamp": row["time"], "Open": row["mid"]["o"], "High": row["mid"]["h"], "Low": row["mid"]["l"], "Close": row["mid"]["c"], "Volume": row["volume"]})
-
-#df = pd.DataFrame(klinesT, columns = ['timestamp', 'Open', 'High', 'Low', 'Close', 'Volume', 'close_time', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'ignore' ])
-df = pd.DataFrame(klinesT, columns =  ['timestamp', 'Open', 'High', 'Low', 'Close', 'Volume'])
-df['Close'] = pd.to_numeric(df['Close'])
-df['High'] = pd.to_numeric(df['High'])
-df['Low'] = pd.to_numeric(df['Low'])
-df['Open'] = pd.to_numeric(df['Open'])
-#df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
-#df['timestamp'] = df['timestamp'].dt.tz_localize(pytz.utc).dt.tz_convert(timezone)
-
-""" del df['ignore']
-del df['close_time']
-del df['quote_av']
-del df['trades']
-del df['tb_base_av']
-del df['tb_quote_av'] """
+df = pd.read_csv("EURUSD_M15_2022-01-02_2022-03-31.csv")
 
 #Check if NA values are in data
-df=df[df['Volume']!=0]
+df=df[df['volume']!=0]
 df.reset_index(drop=True, inplace=True)
 df.isna().sum()
-df = df.set_index(['timestamp'])
 df.tail()
+df['Close'] = pd.to_numeric(df['close'])
+df['High'] = pd.to_numeric(df['high'])
+df['Low'] = pd.to_numeric(df['low'])
+df['Open'] = pd.to_numeric(df['open'])
 
 length = len(df)
 n1=2

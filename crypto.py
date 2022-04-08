@@ -12,10 +12,10 @@ import pandas_ta as ta
 import sys
 import numpy as np
 from indicators.custom import PPSR
-
+client = Client()
 
 timezone= pytz.timezone('Europe/Berlin')
-klinesT = client.get_historical_klines("EURUSDT", Client.KLINE_INTERVAL_15MINUTE, "1 april 2022")
+klinesT = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_1DAY, "1 january 2018")
 
 df = pd.DataFrame(klinesT, columns = ['timestamp', 'Open', 'High', 'Low', 'Close', 'Volume', 'close_time', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'ignore' ])
 df['Close'] = pd.to_numeric(df['Close'])
@@ -129,7 +129,7 @@ months = 24*4*30
 startid = 0
 dfpl = df[startid:startid+30*months]
 
-bt = Backtest(dfpl, SmaLong, margin=1/3, cash=100000, commission=0.001, exclusive_orders=True)
+bt = Backtest(dfpl, SmaOpti, margin=1/1, cash=100000, commission=0.001, exclusive_orders=True)
 stats = bt.run()
 """
 stats = bt.optimize(n1=np.linspace(1, 10, 20).tolist(),
